@@ -6,10 +6,19 @@ before_install:
   - docker build -t sushma1261/react-test -f ./client/Dockerfile.dev ./client
 
 script:
-  - docker run -e CI=true sushma1261/react-test npm run test -- --coverage
+  - docker run -e CI=true sushma1261/react-test npm run test
 
 after_success:
   - docker build -t sushma1261/multi-client ./client
   - docker build -t sushma1261/multi-nginx ./nginx
   - docker build -t sushma1261/multi-server ./server
-  - docker build -t sushma1261/multi-worker ./worker
+  - docker build -t sushma1261/multi-worker ./worker3
+
+  # Log in to docker CLI
+  - echo "$DOCKER_PASSWORD" | docker login -u "$DOCKER_ID" --password-stdin
+
+  #push images to docker hub
+  - docker push sushma1261/multi-client
+  - docker push sushma1261/multi-nginx
+  - docker push sushma1261/multi-server
+  - docker push sushma1261/multi-worker
